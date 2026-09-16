@@ -16,6 +16,19 @@ const upload = multer({
   fileFilter: (_request, file, callback) => callback(null, file.mimetype === 'application/pdf'),
 })
 
+async function initializeDatabase() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS documents (
+      id BIGSERIAL PRIMARY KEY,
+      token UUID NOT NULL UNIQUE,
+      original_name TEXT NOT NULL,
+      mime_type TEXT NOT NULL DEFAULT 'application/pdf',
+      file_data BYTEA NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `)
+}
+
 app.use(cors({ origin: process.env.CORS_ORIGIN?.split(',') ?? true }))
 
 app.get('/api/health', async (_request, response, next) => {
@@ -61,4 +74,9 @@ app.use((error, _request, response, _next) => {
   response.status(500).json({ message: 'Ocorreu um erro ao processar o PDF.' })
 })
 
-app.listen(port, () => console.log(`API disponível em http://localhost:${port}`))
+initializeDatabase()
+  .then(() => app.listen(port, () => console.log(`API disponível em http://localhost:${port}`)))
+  .catch((error) => {
+    console.error('Não foi possível inicializar o banco de dados.', error)
+    process.exit(1)
+  })
