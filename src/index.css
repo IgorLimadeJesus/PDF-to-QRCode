@@ -1,3 +1,5 @@
-body { min-width: 320px; background: var(--bs-tertiary-bg); }
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap');
+* { box-sizing: border-box; }
+body { min-width: 320px; margin: 0; background: #f8f7f2; color: #202620; font-family: Manrope, Arial, sans-serif; }
+button, input { font: inherit; }
 #root { min-height: 100vh; display: flex; flex-direction: column; }
-main { flex: 1; }
