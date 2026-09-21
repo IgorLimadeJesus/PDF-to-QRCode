@@ -13,7 +13,7 @@ const port = Number(process.env.PORT ?? 3001)
 const pool = new Pool({ connectionString: process.env.DATABASE_URL })
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 20 * 1024 * 1024 },
+  limits: { fileSize: 1024 * 1024 * 1024 },
   fileFilter: (_request, file, callback) => callback(null, file.mimetype === 'application/pdf'),
 })
 
@@ -103,7 +103,7 @@ app.post('/api/documents/:token/download', async (request, response, next) => {
 
 app.use((error, _request, response, _next) => {
   void _next
-  if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') return response.status(413).json({ message: 'O PDF deve ter no máximo 20 MB.' })
+  if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') return response.status(413).json({ message: 'O PDF deve ter no máximo 1 GB.' })
   console.error(error)
   response.status(500).json({ message: 'Ocorreu um erro ao processar o PDF.' })
 })
